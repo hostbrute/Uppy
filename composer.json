@@ -1,0 +1,34 @@
+{
+    "name": "hostbrute/uppy",
+    "keywords": ["media"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Wisepotato",
+            "email": "info@hostbrute.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "dimsav/laravel-translatable": "4.3.*",
+        "codesleeve/laravel-stapler" : "dev-master"
+    },
+    "require-dev": {
+        "mockery/mockery": "*",
+        "phpunit/phpunit" : "*",
+        "phpspec/phpspec": "*",
+        "orchestra/testbench": "2.*",
+        "orchestra/foundation" : "2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hostbrute\\Media\\": "src/Media"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "0.0.x-dev"
+        }
+    },
+    "minimum-stability": "dev"
+}

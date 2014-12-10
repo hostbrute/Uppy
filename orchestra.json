@@ -1,0 +1,10 @@
+{
+	"name": "Uppy",
+	"description": "Uppy is a media manager for Orchestra Platform",
+	"author": "Wisepotato",
+	"url": "http://www.hostbrute.com",
+	"version": "dev",
+	"provide": [
+		"Hostbrute\\Uppy\\UppyServiceProvider"
+	]
+}
