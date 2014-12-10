@@ -1,6 +1,7 @@
 {
     "name": "hostbrute/uppy",
-    "keywords": ["media"],
+    "description": "A media manager for orchestra platform",
+    "keywords": ["media", "laravel", "orchestra platform", "media-manager"],
     "license": "MIT",
     "authors": [
         {
