@@ -9,7 +9,7 @@ use Orchestra\Support\Facades\Site;
 
 class PictureController extends AdminController
 {
-	public $package			= 'uppy.pictures';
+	public $package = 'uppy.pictures';
 
 	/**
 	 * @param PicturePresenter $downloadPresenter
@@ -19,14 +19,14 @@ class PictureController extends AdminController
 	{
 		parent::__construct();
 		$this->repository = $partnerRepository;
-		$this->presenter= $downloadPresenter;
+		$this->presenter = $downloadPresenter;
 	}
+
 	public function ajax()
 	{
-		$data = $this->repository->searchLike( Input::get('q'));
+		$data = $this->repository->searchLike(Input::get('q'));
 		$returnData = [];
-		foreach($data as $partner)
-		{
+		foreach ($data as $partner) {
 			$returnData[] = ['id' => $partner->id, 'text' => $partner->name];
 		}
 		$return = [
@@ -34,6 +34,7 @@ class PictureController extends AdminController
 		];
 		return json_encode($return);
 	}
+
 	/**
 	 * Create page for page
 	 *
@@ -44,17 +45,20 @@ class PictureController extends AdminController
 		$form = $this->presenter->edit($this->repository->newModel());
 		return $form;
 	}
+
 	public function store()
 	{
 		$this->repository->store(Input::all());
-		return $this->redirectWithMessage($this->getLink('index') , 'Stored.');
+		return $this->redirectWithMessage($this->getLink('index'), 'Stored.');
 	}
+
 	public function delete($id)
 	{
-		$model  = $this->repository->findOrFail($id);
+		$model = $this->repository->findOrFail($id);
 		$model->delete();
-		return $this->redirectWithMessage($this->getLink('index') , 'Deleted.');
+		return $this->redirectWithMessage($this->getLink('index'), 'Deleted.');
 	}
+
 	/**
 	 * index
 	 *
@@ -62,12 +66,11 @@ class PictureController extends AdminController
 	 */
 	public function index()
 	{
-
 		Site::set('header::add-button', true);
 		$this->setTitle('View Pictures');
 		return $this->presenter->index($this->repository->paginated(10), \Input::all());
-
 	}
+
 	public function edit($id)
 	{
 		//fetch pageModel associated
@@ -76,10 +79,26 @@ class PictureController extends AdminController
 		$this->setTitle('Edit page');
 		return $this->presenter->edit($model);
 	}
+
 	public function update($id = null)
 	{
 		$this->repository->update($id, Input::all());
 		return $this->redirectWithMessage($this->getLink('index'), 'Update successful');
+	}
+
+	/**
+	 * Set up filters
+	 *
+	 */
+	protected function setupFilters()
+	{
+		$this->beforeFilter('orchestra.auth');
+		$this->beforeFilter('orchestra.csrf', [
+			'on' => ['post', 'put', 'delete',],
+		]);
+		$this->beforeFilter('orchestra.csrf', [
+			'only' => ['delete', 'update'],
+		]);
 	}
 
 }

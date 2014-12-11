@@ -15,7 +15,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use URL;
 use View;
 
-class ExceptionsServiceProvider extends ServiceProvider {
+class ExceptionsServiceProvider extends ServiceProvider
+{
 
 	/**
 	 * Register the service provider.
@@ -35,16 +36,16 @@ class ExceptionsServiceProvider extends ServiceProvider {
 			Log::error('ValidationException - ' . $e->getMessage());
 			return Redirect::back()->withInput()->withErrors($e->get());
 		});
-		App::error(function(QueryException $e, $code, $fromConsole) {
+		App::error(function (QueryException $e, $code, $fromConsole) {
 			Log::error('QueryException - ' . $e->getMessage());
-			return $this->showError(3,  $e);
+			return $this->showError(3, $e);
 		});
 		/**
 		 * TokenMismatchException handler
 		 *
 		 * Handle CSRF mismatches
 		 */
-		App::error(function(TokenMismatchException $e, $code, $fromConsole){
+		App::error(function (TokenMismatchException $e, $code, $fromConsole) {
 			Log::error('TokenMismatchException: ip: ' . Request::ip());
 			Site::set('title', 'Oops!');
 			return $this->showError(2, $e);
@@ -55,14 +56,11 @@ class ExceptionsServiceProvider extends ServiceProvider {
 		 *
 		 * What happens if a specific model cant be found.
 		 */
-		App::error(function(ModelNotFoundException $e, $code, $fromConsole){
+		App::error(function (ModelNotFoundException $e, $code, $fromConsole) {
 			Messages::add('error', 'That Id is invalid');
-			if(URL::previous() !== URL::to(''))
-			{
+			if (URL::previous() !== URL::to('')) {
 				return Redirect::back();
-			}
-			else
-			{
+			} else {
 				return Redirect::to('admin');
 			}
 
@@ -80,6 +78,7 @@ class ExceptionsServiceProvider extends ServiceProvider {
 		$debug = $this->app['config']->get('app.debug');
 		return $exception;
 	}
+
 	private function log($message)
 	{
 		Log::error($message . ' ip: ' . Request::ip());

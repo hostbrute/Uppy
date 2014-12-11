@@ -5,27 +5,28 @@ use Codesleeve\Stapler\ORM\EloquentTrait;
 use Codesleeve\Stapler\ORM\StaplerableInterface;
 use Orchestra\Model\Eloquent;
 
-class PictureModel extends Eloquent  implements StaplerableInterface {
+class PictureModel extends Eloquent implements StaplerableInterface
+{
 	use EloquentTrait;
 
+	public $timestamps = false;
+	public $fillable = ['name', 'file'];
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
 	protected $table = 'uppy_pictures';
-	public $timestamps = false;
-	public $fillable = ['name',  'file'];
 
 	public function __construct(array $attributes = array())
 	{
 		$this->hasAttachedFile('file', [
 			'url' => '/uploads/uppy/:id/:style.:extension',
-			'styles'	=> [
-				'thumbnail'	=> [
-					'dimensions'	=> 'x200',
-					'auto-orient'	=> true,
-					'convert_options'	=> ['quality' => 80]
+			'styles' => [
+				'thumbnail' => [
+					'dimensions' => 'x200',
+					'auto-orient' => true,
+					'convert_options' => ['quality' => 80]
 				]
 			]
 		]);

@@ -6,7 +6,8 @@ use Illuminate\Validation\Validator;
 use Laravel\Messages;
 
 
-class ValidationException extends \Exception {
+class ValidationException extends \Exception
+{
 
 	/**
 	 * Errors object.
@@ -24,16 +25,11 @@ class ValidationException extends \Exception {
 	public function __construct($container)
 	{
 
-		if(is_a($container, 'Illuminate\Support\MessageBag'))
-		{
+		if (is_a($container, 'Illuminate\Support\MessageBag')) {
 			$this->errors = $container;
-		}
-		elseif(is_a($container, 'Orchestra\Support\Validator') || is_a($container, 'Illuminate\Validation\Validator'))
-		{
+		} elseif (is_a($container, 'Orchestra\Support\Validator') || is_a($container, 'Illuminate\Validation\Validator')) {
 			$this->errors = $container->errors();
-		}
-		else
-		{
+		} else {
 			$this->errors = ($container instanceof Validator) ? $container->errors : $container;
 		}
 		parent::__construct(null);

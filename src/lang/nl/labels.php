@@ -2,12 +2,12 @@
 
 return [
 
-	'albums'	=> [
-		'name'	=> 'Naam',
-		'pictures'	=> 'Plaatjes'
+	'albums' => [
+		'name' => 'Naam',
+		'pictures' => 'Plaatjes'
 	],
 	'pictures' => [
-		'name'	=> 'Naam',
-		'file'	=> 'Bestand'
+		'name' => 'Naam',
+		'file' => 'Bestand'
 	]
 ];

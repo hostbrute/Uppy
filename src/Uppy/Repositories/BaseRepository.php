@@ -1,4 +1,5 @@
 <?php namespace Hostbrute\Uppy\Repositories;
+
 use Eloquent;
 use Illuminate\Pagination\Paginator;
 
@@ -6,7 +7,8 @@ use Illuminate\Pagination\Paginator;
  * Class BaseRepository
  * @package Hostbrute\Base\Repositories
  */
-class BaseRepository {
+class BaseRepository
+{
 
 	/**
 	 * @var array
@@ -40,11 +42,21 @@ class BaseRepository {
 	{
 		$this->model;
 
-		if($this->checkWith($with))
-		{
+		if ($this->checkWith($with)) {
 			return $this->model->with($with)->find($id);
 		}
 		return $this->model->find($id);
+	}
+
+	/**
+	 * Check if the $with parameter is properly formatted
+	 *
+	 * @param array $with
+	 * @return bool
+	 */
+	protected function checkWith($with)
+	{
+		return (isset($with) && is_array($with) && count($with) > 0);
 	}
 
 	/**
@@ -56,8 +68,7 @@ class BaseRepository {
 	 */
 	public function findOrFail($id, $with = [])
 	{
-		if($this->checkWith($with))
-		{
+		if ($this->checkWith($with)) {
 			return $this->model->with($with)->findOrFail($id);
 		}
 		return $this->model->findOrFail($id);
@@ -70,11 +81,11 @@ class BaseRepository {
 	 * @param array $columns
 	 * @return \Illuminate\Database\Eloquent\Collection|static[]
 	 */
-	public function searchLike( $q, $columns = [])
+	public function searchLike($q, $columns = [])
 	{
 		$model = $this->model;
 		$columns = $columns == [] && isset($this->searchable) ? $this->searchable : $columns;
-		$model = $this->setLikeColumns($columns, $model,$q);
+		$model = $this->setLikeColumns($columns, $model, $q);
 		return $this->returnSearch($model);
 	}
 
@@ -85,14 +96,14 @@ class BaseRepository {
 	 */
 	protected function setLikeColumns($columns, $model, $q)
 	{
-		foreach($columns as $column)
-		{
+		foreach ($columns as $column) {
 			$model = $model->where($column, 'LIKE', '%' . $q)
 				->orWhere($column, 'LIKE', $q)
 				->orWhere($column, 'LIKE', $q . '%');
 		}
 		return $model;
 	}
+
 	/**
 	 * function to return search results, so it can be edited
 	 *
@@ -103,16 +114,7 @@ class BaseRepository {
 	{
 		return $model->get();
 	}
-	/**
-	 * Check if the $with parameter is properly formatted
-	 *
-	 * @param array $with
-	 * @return bool
-	 */
-	protected function checkWith($with)
-	{
-		return (isset($with) && is_array($with) && count($with) > 0);
-	}
+
 	/**
 	 * Generate new model
 	 *
@@ -120,7 +122,7 @@ class BaseRepository {
 	 */
 	public function newModel()
 	{
-		$class =  get_class($this->model);
+		$class = get_class($this->model);
 		return new $class();
 	}
 }

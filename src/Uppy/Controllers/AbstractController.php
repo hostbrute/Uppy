@@ -10,27 +10,9 @@ use Orchestra\Support\Facades\Site;
 use Orchestra\Support\Traits\ControllerResponseTrait;
 use Redirect;
 
-abstract class AbstractController extends AdminController {
+abstract class AbstractController extends AdminController
+{
 	use ControllerResponseTrait;
-
-	/**
-	 * Current Resource.
-	 *
-	 * @var string
-	 */
-	protected $resource;
-
-	/**
-	 * Validation instance.
-	 *
-	 * @var object
-	 */
-	protected $validator;
-
-	/**
-	 * @var object
-	 */
-	protected $presenter;
 
 	/**
 	 * views prefix
@@ -39,34 +21,22 @@ abstract class AbstractController extends AdminController {
 	 * @var string
 	 */
 	public $prefix = 'backend';
-
 	/**
-	 * Setup content format type.
+	 * Current Resource.
 	 *
-	 * @return void
+	 * @var string
 	 */
-	protected function setupFormat()
-	{
-	}
-
-	protected function setupFilters()
-	{
-		$this->beforeFilter('orchestra.csrf', ['only' => ['update', 'store']]);
-		$this->beforeFilter(function () {
-			if (Auth::guest()) {
-				return Redirect::to(handles('orchestra::/'));
-			}
-		});
-	}
+	protected $resource;
 	/**
-	 * Used for all official references, double check if this is correctly set!
+	 * Validation instance.
 	 *
-	 * @return mixed
+	 * @var object
 	 */
-	public function getType()
-	{
-		return $this->type;
-	}
+	protected $validator;
+	/**
+	 * @var object
+	 */
+	protected $presenter;
 
 	/**
 	 * get plural of the subject
@@ -79,6 +49,40 @@ abstract class AbstractController extends AdminController {
 	}
 
 	/**
+	 * translate a line for this package
+	 *
+	 * @param $line
+	 * @param array $data
+	 * @return mixed
+	 */
+	public function trans($line, array $data = array())
+	{
+		return Lang::get($this->getPackage() . '::' . $line, $data);
+	}
+
+	/**
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	protected function getPackage()
+	{
+		if (!isset($this->package)) {
+			throw new \Exception('package not defined for this controller');
+		}
+		return $this->package;
+	}
+
+	/**
+	 * Used for all official references, double check if this is correctly set!
+	 *
+	 * @return mixed
+	 */
+	public function getType()
+	{
+		return $this->type;
+	}
+
+	/**
 	 * @param $error
 	 * @return $this|AbstractController|\Illuminate\Http\RedirectResponse|mixed
 	 */
@@ -86,6 +90,18 @@ abstract class AbstractController extends AdminController {
 	{
 		return $this->showError($error);
 	}
+
+	/**
+	 * show error
+	 *
+	 * @param $error
+	 * @return mixed
+	 */
+	public function showError($error)
+	{
+		return View::make('hostbrute/base::common.error', ['error' => $this->parseError($error)]);
+	}
+
 	/**
 	 * get subject language key
 	 *
@@ -106,28 +122,13 @@ abstract class AbstractController extends AdminController {
 	 */
 	public function redirectBack($errors = null)
 	{
-		if(isset($errors))
-		{
+		if (isset($errors)) {
 			return Redirect::back()->withErrors($errors)->withInput();
-		}
-		else
-		{
+		} else {
 			return Redirect::back()->withErrors($errors);
 		}
 	}
 
-	/**
-	 * @return mixed
-	 * @throws \Exception
-	 */
-	protected function getPackage()
-	{
-		if(!isset($this->package))
-		{
-			throw new \Exception('package not defined for this controller');
-		}
-		return $this->package;
-	}
 	/**
 	 * Show a general failed page
 	 *
@@ -138,6 +139,14 @@ abstract class AbstractController extends AdminController {
 	{
 		return $this->redirectWithMessage($this->getLink('index'), 'Something went wrong but we don\'t know what');
 	}
+
+	/**
+	 * @param $type
+	 * @param null $id
+	 * @return mixed
+	 */
+	protected abstract function getLink($type, $id = null);
+
 	/**
 	 * Set title
 	 *
@@ -146,36 +155,11 @@ abstract class AbstractController extends AdminController {
 	 */
 	public function setTitle($title, $data = null)
 	{
-		if(isset($data) && $data !== null)
-		{
-			Site::set('title', $this->trans($title, ['subject' => $data ]));
-		}
-		else
-		{
+		if (isset($data) && $data !== null) {
+			Site::set('title', $this->trans($title, ['subject' => $data]));
+		} else {
 			Site::set('title', $title);
 		}
-	}
-	/**
-	 * show error
-	 *
-	 * @param $error
-	 * @return mixed
-	 */
-	public function showError($error)
-	{
-		return View::make('hostbrute/base::common.error', ['error' => $this->parseError($error) ]);
-	}
-
-	/**
-	 * translate a line for this package
-	 *
-	 * @param $line
-	 * @param array $data
-	 * @return mixed
-	 */
-	public function trans($line, array $data = array())
-	{
-		return Lang::get($this->getPackage() . '::' . $line, $data);
 	}
 
 	/**
@@ -188,12 +172,9 @@ abstract class AbstractController extends AdminController {
 	 */
 	public function view($view, $data = [])
 	{
-		if(in_array($view, ['index', 'editor']))
-		{
-			return View::make($this->getPackage() . '::' . $this->prefix . '.'. $this->plural . '.' . $view, $data);
-		}
-		else
-		{
+		if (in_array($view, ['index', 'editor'])) {
+			return View::make($this->getPackage() . '::' . $this->prefix . '.' . $this->plural . '.' . $view, $data);
+		} else {
 			return View::make($this->getPackage() . '::' . $view, $data);
 		}
 	}
@@ -206,15 +187,27 @@ abstract class AbstractController extends AdminController {
 	 * @return mixed|void
 	 * @throws \BadMethodCallException
 	 */
-	public function __call($method, $parameters =[])
+	public function __call($method, $parameters = [])
 	{
 		return Response::view('orchestra/foundation::dashboard.missing', $parameters, 404);
 	}
 
 	/**
-	 * @param $type
-	 * @param null $id
-	 * @return mixed
+	 * Setup content format type.
+	 *
+	 * @return void
 	 */
-	protected abstract function getLink($type, $id = null);
+	protected function setupFormat()
+	{
+	}
+
+	protected function setupFilters()
+	{
+		$this->beforeFilter('orchestra.csrf', ['only' => ['update', 'store']]);
+		$this->beforeFilter(function () {
+			if (Auth::guest()) {
+				return Redirect::to(handles('orchestra::/'));
+			}
+		});
+	}
 }

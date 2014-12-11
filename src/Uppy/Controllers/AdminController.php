@@ -2,7 +2,6 @@
 namespace Hostbrute\Uppy\Controllers;
 
 
-
 abstract class AdminController extends AbstractController
 {
 
@@ -14,16 +13,13 @@ abstract class AdminController extends AbstractController
 	 */
 	protected function getLink($where = null, $identification = null)
 	{
-		if(in_array($where, ['index', 'edit']))
-		{
-			switch($where)
-			{
+		if (in_array($where, ['index', 'edit'])) {
+			switch ($where) {
 				case 'index':
 					return route('admin.' . $this->getPackage() . '.index');
 					break;
 				case 'edit':
-					if(!isset($identification))
-					{
+					if (!isset($identification)) {
 						throw new InvalidArgumentException('Id should be set when $where is edit');
 					}
 					return route('admin.' . $this->getPackage() . '.index', [$identification]);
@@ -32,9 +28,7 @@ abstract class AdminController extends AbstractController
 					return resources($this->getResource());
 					break;
 			}
-		}
-		else
-		{
+		} else {
 			return resources($this->getResource());
 		}
 	}

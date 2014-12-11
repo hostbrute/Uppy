@@ -1,15 +1,17 @@
 <?php namespace Hostbrute\Uppy\Validators;
+
 use Orchestra\Support\Validator;
 
 
-class AlbumValidator extends Validator {
+class AlbumValidator extends Validator
+{
 	/**
 	 * Validation rules.
 	 *
 	 * @var array
 	 */
 	public $rules = array(
-		'name'		=> ['required', 'max:255'],
+		'name' => ['required', 'max:255'],
 	);
 
 	/**

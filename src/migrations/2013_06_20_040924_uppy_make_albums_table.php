@@ -20,6 +20,15 @@ class UppyMakeAlbumsTable extends Migration
 				$table->string('description');
 			});
 		}
+		if (!Schema::hasTable('uppy_album_pictures')) {
+			Schema::create('uppy_album_pictures', function (Blueprint $table) {
+				$table->increments('id');
+				$table->integer('album_id');
+				$table->integer('picture_id');
+
+				$table->unique(['album_id', 'picture_id']);
+			});
+		}
 	}
 
 	/**
@@ -30,5 +39,6 @@ class UppyMakeAlbumsTable extends Migration
 	public function down()
 	{
 		Schema::drop('uppy_albums');
+		Schema::drop('uppy_album_pictures');
 	}
 }

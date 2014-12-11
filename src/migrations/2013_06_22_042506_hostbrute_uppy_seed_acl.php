@@ -16,9 +16,9 @@ class HostbruteUppySeedAcl extends Migration
 	public function up()
 	{
 
-		$admin	= Role::admin();
-		$member	= Role::member();
-		$acl	= Acl::make('hostbrute/uppy');
+		$admin = Role::admin();
+		$member = Role::member();
+		$acl = Acl::make('hostbrute/uppy');
 
 		$acl->roles()->attach([$admin->name, $member->name]);
 

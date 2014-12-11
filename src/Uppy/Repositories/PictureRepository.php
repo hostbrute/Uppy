@@ -4,7 +4,8 @@ use Hostbrute\Uppy\Models\PictureModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
-class PictureRepository extends BaseRepository {
+class PictureRepository extends BaseRepository
+{
 
 	public $searchable = ['name'];
 
@@ -36,15 +37,6 @@ class PictureRepository extends BaseRepository {
 	}
 
 	/**
-	 * @param $input
-	 */
-	public function store( $input)
-	{
-		$picture = $this->model;
-		$this->save($picture, $input, 'update');
-	}
-
-	/**
 	 * @param $picture
 	 * @param array $input
 	 * @param string $type
@@ -56,8 +48,8 @@ class PictureRepository extends BaseRepository {
 		$afterEvent = ($type === 'create' ? 'created' : 'updated');
 
 		$data = [
-			'file'	=> $input['file'],
-			'name'	=> $input['name']
+			'file' => $input['file'],
+			'name' => $input['name']
 		];
 
 		$picture->fill($data);
@@ -82,5 +74,14 @@ class PictureRepository extends BaseRepository {
 	protected function fireEvent($event, $params)
 	{
 		Event::fire('uppy.pictures: ' . $event, $params);
+	}
+
+	/**
+	 * @param $input
+	 */
+	public function store($input)
+	{
+		$picture = $this->model;
+		$this->save($picture, $input, 'update');
 	}
 }
